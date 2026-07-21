@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>滑块拼图 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/puzzle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 滑块拼图游戏区域 -->
+        <div id="puzzle" class="game-area">
+            <!-- 主题选择 - 三种精美主题（使用数学函数绘制完整图像） -->
+            <div class="puzzle-theme-selector">
+                <button class="theme-btn active" data-theme="aurora" onclick="setPuzzleTheme('aurora')">🌌 极光梦境</button>
+                <button class="theme-btn" data-theme="kaleidoscope" onclick="setPuzzleTheme('kaleidoscope')">🪷 几何万花筒</button>
+                <button class="theme-btn" data-theme="nebula" onclick="setPuzzleTheme('nebula')">🌀 星云漩涡</button>
+            </div>
+
+            <!-- 难度选择 -->
+            <div class="difficulty-selector">
+                <button class="diff-btn" data-diff="easy" onclick="setPuzzleDifficulty('easy')">简单 3×3</button>
+                <button class="diff-btn active" data-diff="medium" onclick="setPuzzleDifficulty('medium')">中等 4×4</button>
+                <button class="diff-btn" data-diff="hard" onclick="setPuzzleDifficulty('hard')">困难 5×5</button>
+                <button class="diff-btn" data-diff="expert" onclick="setPuzzleDifficulty('expert')">专家 6×6</button>
+            </div>
+
+            <!-- 操作面板 -->
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startPuzzleGame()">🔀 打乱</button>
+                <button class="ctrl-btn hint-btn" onclick="showPuzzlePreview()">👁 预览</button>
+                <button class="ctrl-btn reset-btn" onclick="resetPuzzleGame()">↺ 重置</button>
+                <button class="ctrl-btn num-btn" id="puzzle-num-toggle" onclick="togglePuzzleNumbers()">🔢 数字</button>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="puzzle-stats info-panel">
+                <div>👣 步数: <span id="puzzle-moves">0</span></div>
+                <div>⏱ 用时: <span id="puzzle-time">00:00</span></div>
+            </div>
+
+            <!-- 拼图棋盘 -->
+            <div class="puzzle-container">
+                <div id="puzzle-board" class="puzzle-board"></div>
+                <div class="controls-hint">点击空白格相邻的方块滑动 · 拖动方块移动 · 空格键打乱 · N键切换数字</div>
+            </div>
+
+            <!-- 预览图弹窗 -->
+            <div class="modal" id="puzzle-preview-modal">
+                <div class="modal-content">
+                    <h2>🖼 完整图案预览</h2>
+                    <div id="puzzle-preview-area" class="puzzle-preview-area"></div>
+                    <button class="modal-btn" onclick="closePuzzlePreview()">关闭预览</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/puzzle.js"></script>
+    <script>initPuzzle();</script>
+</body>
+</html>
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>记忆翻牌 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/memory.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 记忆翻牌游戏区域 -->
+        <div id="memory" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setMemoryDiff('easy')">简单 3×4</button>
+                <button class="diff-btn" onclick="setMemoryDiff('medium')">中等 4×4</button>
+                <button class="diff-btn" onclick="setMemoryDiff('hard')">困难 4×6</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="newMemoryGame()">新游戏</button>
+            </div>
+            <div class="info-panel">
+                <div>⏱️ 时间: <span id="memory-timer">00:00</span></div>
+                <div>👣 步数: <span id="memory-moves">0</span></div>
+                <div>🎯 剩余: <span id="memory-left">6</span></div>
+            </div>
+            <div class="memory-wrapper">
+                <div class="memory-grid" id="memory-grid"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/memory.js"></script>
+</body>
+</html>
+

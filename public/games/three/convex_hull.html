@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>凸包几何 - 3D模型</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/three/three.css">
+    <style>
+        body { background: #000; }
+        .container { padding: 0; }
+        .game-selector { display: none !important; }
+        .sidebar { z-index: 200; }
+        .sidebar-overlay { z-index: 190; }
+        .three-page .top-bar { z-index: 150; }
+    </style>
+</head>
+<body class="three-page" data-model-id="convex_hull">
+    <div class="container">
+        <div class="game-area" id="model-area">
+            <div class="three-model-selector" id="model-selector"></div>
+            <div class="three-container-wrap">
+                <div id="three-container"></div>
+            </div>
+            <div class="three-info">
+                🖱 拖拽旋转视角 | 滚轮缩放 | 滑动屏幕 360° 观看
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three/libs/three.module.min.js",
+                "three/addons/": "../assets/js/three/libs/"
+            }
+        }
+    </script>
+
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/three/models.js"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        window.THREE = THREE;
+
+        function initConvexHull() {
+            const container = document.getElementById('three-container');
+            if (!container) return;
+
+            // --- 场景 ---
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f0c29);
+
+            // --- 相机 ---
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(5, 4, 6);
+
+            // --- 渲染器 ---
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // --- 光照 ---
+            const ambient = new THREE.AmbientLight(0x404060);
+            scene.add(ambient);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            dirLight.position.set(5, 10, 7);
+            scene.add(dirLight);
+            const dirLight2 = new THREE.DirectionalLight(0x00d4ff, 0.5);
+            dirLight2.position.set(-5, -3, 5);
+            scene.add(dirLight2);
+
+            // --- 控制器 ---
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 0, 0);
+
+            // ============ 使用 ConvexGeometry ============
+            // 生成 60 个随机点
+            const pointCount = 60;
+            const points = [];
+            for (let i = 0; i < pointCount; i++) {
+                const radius = 1.5 + Math.random() * 1.5;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                points.push(new THREE.Vector3(
+                    radius * Math.sin(phi) * Math.cos(theta),
+                    radius * Math.sin(phi) * Math.sin(theta),
+                    radius * Math.cos(phi)
+                ));
+            }
+
+            // 创建凸包几何体
+            const convexGeo = new ConvexGeometry(points);
+
+            // 凸包实体（半透明）
+            const convexMat = new THREE.MeshPhongMaterial({
+                color: 0xc77dff,
+                emissive: 0x7b2cbf,
+                emissiveIntensity: 0.2,
+                transparent: true,
+                opacity: 0.6,
+                shininess: 80,
+                side: THREE.DoubleSide,
+            });
+            const convexMesh = new THREE.Mesh(convexGeo, convexMat);
+            scene.add(convexMesh);
+
+            // 凸包线框
+            const edgesGeo = new THREE.EdgesGeometry(convexGeo);
+            const edgesMat = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.5,
+            });
+            const wireframe = new THREE.LineSegments(edgesGeo, edgesMat);
+            scene.add(wireframe);
+
+            // 显示原始点云
+            const dotGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(points.length * 3);
+            points.forEach((p, i) => {
+                positions[i * 3] = p.x;
+                positions[i * 3 + 1] = p.y;
+                positions[i * 3 + 2] = p.z;
+            });
+            dotGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const dotMat = new THREE.PointsMaterial({
+                color: 0xffff44,
+                size: 0.08,
+                transparent: true,
+                opacity: 0.8,
+            });
+            const dots = new THREE.Points(dotGeo, dotMat);
+            scene.add(dots);
+
+            // --- 自适应 ---
+            function onResize() {
+                const w = container.clientWidth;
+                const h = container.clientHeight || 500;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            }
+            window.addEventListener('resize', onResize);
+
+            // --- 动画 ---
+            let animId;
+            function animate() {
+                animId = requestAnimationFrame(animate);
+                convexMesh.rotation.y += 0.005;
+                wireframe.rotation.y += 0.005;
+                dots.rotation.y += 0.005;
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // --- 清理 ---
+            window.__convexViewerDispose = function () {
+                cancelAnimationFrame(animId);
+                window.removeEventListener('resize', onResize);
+                renderer.dispose();
+                if (container.contains(renderer.domElement)) {
+                    container.removeChild(renderer.domElement);
+                }
+            };
+        }
+
+        window.addEventListener('load', function () {
+            if (typeof initCommonLayout === 'function') initCommonLayout('three', 'models');
+            if (typeof initModelSelector === 'function') initModelSelector();
+            initConvexHull();
+        });
+    </script>
+</body>
+</html>

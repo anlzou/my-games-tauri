@@ -1,0 +1,245 @@
+/* ========== 华容道专属样式 ========== */
+.klotski-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ========== 主题选择器 ========== */
+.theme-selector {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+.theme-btn {
+    padding: 6px 14px;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.08);
+    color: #00d4ff;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.theme-btn:hover, .theme-btn.active {
+    background: #00d4ff;
+    color: #1a1a2e;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+/* ========== 棋盘 ========== */
+.klotski-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 3px;
+    background: #2a1f3d;
+    padding: 4px;
+    border-radius: 12px;
+    border: 3px solid rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+    width: min(90vw, 400px);
+    /* 4列5行，宽高比 = 4:5 保持格子为正方形 */
+    aspect-ratio: 4 / 5;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+}
+
+/* ========== 胜利出口标记 ========== */
+.klotski-exit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 3px dashed rgba(255, 215, 0, 0.7);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: rgba(255, 215, 0, 0.05);
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 10;
+    animation: exitGlow 2s ease-in-out infinite;
+    grid-column: 2 / span 2;
+    grid-row: 5 / span 1;
+}
+.klotski-exit::after {
+    content: '⬇ 出口 ⬇';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.5em, 1.2vw, 0.7em);
+    color: rgba(255, 215, 0, 0.8);
+    white-space: nowrap;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    font-weight: bold;
+}
+@keyframes exitGlow {
+    0%, 100% { border-color: rgba(255, 215, 0, 0.5); }
+    50% { border-color: rgba(255, 215, 0, 0.9); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+}
+
+.klotski-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    word-break: break-all;
+    line-height: 1.2;
+    padding: 2px;
+    box-sizing: border-box;
+    /* 确保棋子内容不溢出 */
+    min-width: 0;
+    min-height: 0;
+}
+
+.klotski-tile:hover {
+    transform: scale(1.02);
+    z-index: 2;
+}
+
+.klotski-tile:active {
+    transform: scale(0.96);
+}
+
+.klotski-tile.empty {
+    background: transparent;
+    cursor: default;
+    pointer-events: none;
+}
+.klotski-tile.empty:hover {
+    transform: none;
+}
+
+/* ========== 棋子样式 — 经典（文字） ========== */
+.theme-classic .klotski-tile:not(.empty) {
+    background: linear-gradient(135deg, #ff6b6b, #c0392b);
+    color: #fff;
+    border: 2px solid #e74c3c;
+    box-shadow: inset 0 -2px 6px rgba(0,0,0,0.2);
+    font-size: clamp(0.65em, 1.8vw, 0.9em);
+}
+.theme-classic .klotski-tile[data-size="2"] {
+    background: linear-gradient(135deg, #ff9ff3, #f368e0);
+    border-color: #f368e0;
+    font-size: clamp(0.75em, 2vw, 1.1em);
+}
+
+/* ========== 棋子样式 — 植物主题 ========== */
+.theme-plants .klotski-tile:not(.empty) {
+    background: linear-gradient(135deg, #2ed573, #05c46b);
+    color: #fff;
+    border: 2px solid #1dd1a1;
+    font-size: clamp(1em, 3vw, 1.6em);
+}
+.theme-plants .klotski-tile[data-size="2"] {
+    background: linear-gradient(135deg, #ffa502, #ff6348);
+    border-color: #ff6348;
+    font-size: clamp(1.2em, 3.5vw, 1.8em);
+}
+
+/* ========== 棋子样式 — 动物主题 ========== */
+.theme-animals .klotski-tile:not(.empty) {
+    background: linear-gradient(135deg, #eccc68, #ffa502);
+    color: #2d2d3d;
+    border: 2px solid #e67e22;
+    font-size: clamp(1em, 3vw, 1.6em);
+}
+.theme-animals .klotski-tile[data-size="2"] {
+    background: linear-gradient(135deg, #70a1ff, #1e90ff);
+    border-color: #1e90ff;
+    color: #fff;
+    font-size: clamp(1.2em, 3.5vw, 1.8em);
+}
+
+/* ========== 棋子样式 — 水果主题 ========== */
+.theme-fruits .klotski-tile:not(.empty) {
+    background: linear-gradient(135deg, #ff4757, #c0392b);
+    color: #fff;
+    border: 2px solid #e74c3c;
+    font-size: clamp(1em, 3vw, 1.6em);
+}
+.theme-fruits .klotski-tile[data-size="2"] {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    border-color: #f1c40f;
+    font-size: clamp(1.2em, 3.5vw, 1.8em);
+}
+
+/* ========== 棋子样式 — 数字主题 ========== */
+.theme-numbers .klotski-tile:not(.empty) {
+    background: linear-gradient(135deg, #2f3542, #57606f);
+    color: #00d4ff;
+    border: 2px solid #57606f;
+    font-size: clamp(0.8em, 2.5vw, 1.4em);
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+.theme-numbers .klotski-tile[data-size="2"] {
+    background: linear-gradient(135deg, #1e272e, #485460);
+    color: #ff6b6b;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    font-size: clamp(1em, 3vw, 1.6em);
+}
+
+/* ========== 步数、计时信息 ========== */
+.klotski-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 0.95em;
+}
+.klotski-stats span {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* ========== 游戏结束胜利动画 ========== */
+@keyframes winPulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+    50% { transform: scale(1.03); box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+}
+.klotski-board.win {
+    animation: winPulse 0.8s ease 3;
+    border-color: #28a745 !important;
+}
+
+/* ========== 移动端适配 ========== */
+@media (max-width: 768px) {
+    .klotski-board {
+        width: min(92vw, 360px);
+    }
+    .theme-btn {
+        padding: 5px 10px;
+        font-size: 0.75em;
+    }
+    .klotski-stats {
+        font-size: 0.85em;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .klotski-board {
+        gap: 2px;
+        padding: 3px;
+    }
+    .klotski-tile {
+        border-radius: 4px;
+    }
+}

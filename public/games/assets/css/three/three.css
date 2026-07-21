@@ -1,0 +1,156 @@
+/* =====================================================================
+ * 3D 模型页面通用样式（three.css）
+ * =====================================================================
+ * 适用于 three/ 目录下所有 3D 模型详情页。
+ *
+ * 全屏沉浸式布局：
+ *   - 3D 画布占据整个视口（除顶部栏外）
+ *   - 顶部栏、模型切换按钮、操作提示以半透明浮层形式悬浮在画布上方
+ * =====================================================================
+ */
+
+/* ===== 全屏沉浸式 3D 容器 ===== */
+.three-page .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    max-width: none;
+    padding: 0;
+}
+
+/* ===== 顶部栏 - 半透明浮层 ===== */
+.three-page .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: linear-gradient(180deg, rgba(15,12,41,0.85) 0%, rgba(15,12,41,0) 100%);
+    padding: 8px 12px 16px;
+    margin: 0;
+    border: none;
+    pointer-events: none;
+}
+.three-page .top-bar > * {
+    pointer-events: auto;
+}
+
+/* ===== 模型区占满全屏 ===== */
+#model-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+/* ===== 3D 画布外层容器：占满全屏 ===== */
+.three-container-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0f0c29;
+}
+
+/* Three.js 渲染器画布：铺满 */
+#three-container {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+#three-container:active {
+    cursor: grabbing;
+}
+
+/* ===== 模型切换选择器 - 半透明底栏 ===== */
+.three-model-selector {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    background: rgba(15, 12, 41, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    max-width: 90vw;
+}
+
+/* 每个模型切换按钮 */
+.three-model-btn {
+    padding: 8px 16px;
+    font-size: 0.85em;
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    background: rgba(0, 212, 255, 0.12);
+    color: #00d4ff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    white-space: nowrap;
+        text-decoration: none;
+    display: inline-block;
+}
+
+.three-model-btn:hover,
+.three-model-btn.active {
+    background: #00d4ff;
+    color: #1a1a2e;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+}
+
+/* 底部操作提示信息 - 半透明浮层 */
+.three-info {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8em;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 4px 14px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* ===== 响应式适配 ===== */
+
+/* 平板及手机竖屏：隐藏模型切换选择器（移动端通过侧边栏切换） */
+@media (max-width: 768px) {
+    .three-model-selector {
+        display: none;
+    }
+    .three-info {
+        bottom: 16px;
+        font-size: 0.7em;
+        padding: 3px 10px;
+    }
+}
+
+/* 移动端横屏模式：隐藏模型切换选择器，隐藏底部提示信息 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .three-model-selector {
+        display: none !important;
+    }
+    .three-info {
+        display: none !important;
+    }
+}

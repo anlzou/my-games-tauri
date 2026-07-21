@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>动画重定向 - 3D模型</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/three/three.css">
+    <style>
+        body {
+            background: #000;
+        }
+        .container { padding: 0; }
+        .game-selector { display: none !important; }
+        .sidebar { z-index: 200; }
+        .sidebar-overlay { z-index: 190; }
+        .three-page .top-bar { z-index: 150; }
+    </style>
+</head>
+<body class="three-page" data-model-id="retargeting_readyplayer">
+    <div class="container">
+        <div class="game-area" id="model-area">
+            <div class="three-model-selector" id="model-selector"></div>
+            <div class="three-container-wrap">
+                <div id="three-container"></div>
+            </div>
+            <div class="three-info">
+                🖱 拖拽旋转视角 | 滚轮缩放 | 滑动屏幕 360° 观看
+            </div>
+        </div>
+    </div>
+
+        <!-- WebGPU 导入映射 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three/libs/three.webgpu.min.js",
+                "three/webgpu": "../assets/js/three/libs/three.webgpu.min.js",
+                "three/tsl": "../assets/js/three/libs/three.tsl.min.js",
+                "three/addons/": "../assets/js/three/libs/"
+            }
+        }
+    </script>
+
+    <!-- 公共模块 -->
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/three/models.js"></script>
+
+    <!-- 模块脚本：注入依赖 -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { screenUV, color, vec2, vec4, reflector, positionWorld } from 'three/tsl';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+        import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+
+        // 将依赖注入到全局
+        window.__RETARGETING_DEPS__ = { THREE, GLTFLoader, FBXLoader, SkeletonUtils };
+        window.__TSL__ = { screenUV, color, vec2, vec4, reflector, positionWorld };
+        window.THREE = THREE;
+
+        // 动态加载 retargeting_readyplayer.js（非模块脚本）
+        var script = document.createElement('script');
+        script.src = '../assets/js/three/retargeting_readyplayer.js';
+        script.onload = function () {
+            initRetargeting('three-container', {
+                mixamo: '../assets/models/fbx/mixamo.fbx',
+                readyPlayerMe: '../assets/models/gltf/readyplayer.me.glb'
+            }, {
+                fov: 40,
+                camPosY: 3,
+                camPosZ: 5,
+                floorOpacity: 0.2
+            });
+        };
+        document.head.appendChild(script);
+
+        // 集成公共导航和模型选择器
+        window.addEventListener('load', function () {
+            if (typeof initCommonLayout === 'function') {
+                initCommonLayout('three', 'models');
+            }
+            if (typeof initModelSelector === 'function') {
+                initModelSelector();
+            }
+        });
+    </script>
+</body>
+</html>
+

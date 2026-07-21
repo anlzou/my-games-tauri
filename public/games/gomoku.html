@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>五子棋 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/gomoku.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 五子棋游戏区域 -->
+        <div id="gomoku" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setGomokuMode('pvp')">双人对战</button>
+                <button class="diff-btn" onclick="setGomokuMode('pve')">人机对战</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="newGomokuGame()">新游戏</button>
+            </div>
+            <div class="gomoku-info">
+                <div>⚫ 黑方: <span id="gomoku-black">玩家</span></div>
+                <div>⚪ 白方: <span id="gomoku-white">电脑</span></div>
+            </div>
+            <div class="gomoku-wrapper">
+                <div class="gomoku-board" id="gomoku-board"></div>
+                <div class="controls-hint">点击棋盘落子 | 黑方先手</div>
+                <div class="gomoku-stats" id="gomoku-stats">
+                    <div>⚫ 黑方胜: <span id="gomoku-black-wins">0</span></div>
+                    <div>⚪ 白方胜: <span id="gomoku-white-wins">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/gomoku.js"></script>
+</body>
+</html>

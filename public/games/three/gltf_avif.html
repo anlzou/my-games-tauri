@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GLTF AVIF纹理 - 3D模型</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/three/three.css">
+    <style>
+        body {
+            background: #000;
+        }
+        .container { padding: 0; }
+        .game-selector { display: none !important; }
+        .sidebar { z-index: 200; }
+        .sidebar-overlay { z-index: 190; }
+        .three-page .top-bar { z-index: 150; }
+    </style>
+</head>
+<body class="three-page" data-model-id="gltf_avif">
+    <div class="container">
+        <div class="game-area" id="model-area">
+            <div class="three-model-selector" id="model-selector"></div>
+            <div class="three-container-wrap">
+                <div id="three-container"></div>
+            </div>
+            <div class="three-info">
+                🖱 拖拽旋转视角 | 滚轮缩放 | 滑动屏幕 360° 观看
+            </div>
+        </div>
+    </div>
+
+    <!-- 导入映射 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three/libs/three.module.min.js",
+                "three/addons/": "../assets/js/three/libs/"
+            }
+        }
+		</script>
+
+    <!-- 公共模块 -->
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/three/models.js"></script>
+
+    <!-- 模块脚本：注入依赖 -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+        // 将依赖注入到全局
+        window.__GLTF_AVIF_DEPS__ = { THREE, GLTFLoader, DRACOLoader };
+        window.THREE = THREE; // 供 models.js 中的 createOrbitControls 等函数使用
+
+        // 动态加载 gltf_avif.js（非模块脚本）
+        var script = document.createElement('script');
+        script.src = '../assets/js/three/gltf_avif.js';
+        script.onload = function () {
+            initGltfAvif('three-container', {
+                path: '../assets/models/gltf/forest_house.glb',
+                scale: 1
+            }, {
+                camPos: { x: 1.5, y: 2, z: 6 },
+                fov: 45,
+                bgColor: 0xf6eedc
+            });
+        };
+        document.head.appendChild(script);
+
+        // 集成公共导航和模型选择器
+        window.addEventListener('load', function () {
+            if (typeof initCommonLayout === 'function') {
+                initCommonLayout('three', 'models');
+            }
+            if (typeof initModelSelector === 'function') {
+                initModelSelector();
+            }
+        });
+    </script>
+	</body>
+</html>
+
+

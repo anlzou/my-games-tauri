@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>机器人模型 - 3D模型</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/three/three.css">
+    <style>
+        body {
+            background: #000;
+            overflow: hidden;
+        }
+        .container { padding: 0; }
+        .game-selector { display: none !important; }
+        .sidebar { z-index: 200; }
+        .sidebar-overlay { z-index: 190; }
+        .three-page .top-bar { z-index: 150; }
+
+        /* ===== 机器人控制面板 ===== */
+        .robot-control-panel {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 60;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: rgba(15, 12, 41, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 18px;
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            max-width: 92vw;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .robot-btn {
+            padding: 10px 18px;
+            font-size: 0.85em;
+            border: 2px solid rgba(0, 212, 255, 0.35);
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: bold;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .robot-btn:hover {
+            background: rgba(0, 212, 255, 0.25);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .robot-btn:active {
+            transform: scale(0.92);
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+
+        .robot-btn.active {
+            background: #00d4ff;
+            color: #1a1a2e;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        /* 不同颜色按钮 */
+        .robot-btn.green {
+            border-color: rgba(40, 167, 69, 0.5);
+            background: rgba(40, 167, 69, 0.15);
+            color: #4cdf6c;
+        }
+        .robot-btn.green:hover,
+        .robot-btn.green.active {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .robot-btn.purple {
+            border-color: rgba(199, 125, 255, 0.5);
+            background: rgba(199, 125, 255, 0.15);
+            color: #c77dff;
+        }
+        .robot-btn.purple:hover,
+        .robot-btn.purple.active {
+            background: #c77dff;
+            color: #1a1a2e;
+            border-color: #c77dff;
+            box-shadow: 0 0 20px rgba(199, 125, 255, 0.4);
+        }
+
+        .robot-btn.orange {
+            border-color: rgba(255, 165, 0, 0.5);
+            background: rgba(255, 165, 0, 0.15);
+            color: #ffa500;
+        }
+        .robot-btn.orange:hover,
+        .robot-btn.orange.active {
+            background: #ffa500;
+            color: #1a1a2e;
+            border-color: #ffa500;
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+        }
+
+        .robot-btn.pink {
+            border-color: rgba(255, 105, 180, 0.5);
+            background: rgba(255, 105, 180, 0.15);
+            color: #ff69b4;
+        }
+        .robot-btn.pink:hover,
+        .robot-btn.pink.active {
+            background: #ff69b4;
+            color: #1a1a2e;
+            border-color: #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .robot-btn.yellow {
+            border-color: rgba(255, 193, 7, 0.5);
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+        .robot-btn.yellow:hover,
+        .robot-btn.yellow.active {
+            background: #ffc107;
+            color: #1a1a2e;
+            border-color: #ffc107;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .robot-btn.red {
+            border-color: rgba(220, 53, 69, 0.5);
+            background: rgba(220, 53, 69, 0.15);
+            color: #ff6b7a;
+        }
+        .robot-btn.red:hover,
+        .robot-btn.red.active {
+            background: #dc3545;
+            color: #fff;
+            border-color: #dc3545;
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .robot-btn.cyan {
+            border-color: rgba(0, 255, 255, 0.5);
+            background: rgba(0, 255, 255, 0.12);
+            color: #0ff;
+        }
+        .robot-btn.cyan:hover,
+        .robot-btn.cyan.active {
+            background: #0ff;
+            color: #1a1a2e;
+            border-color: #0ff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        /* 模型名称标签 */
+        .robot-name-tag {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 45;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.15);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+
+        /* 响应式控制面板 */
+        @media (max-width: 768px) {
+            .robot-control-panel {
+                bottom: 60px;
+                padding: 10px 12px;
+                gap: 6px;
+                max-width: 96vw;
+            }
+            .robot-btn {
+                padding: 8px 12px;
+                font-size: 0.75em;
+                border-radius: 18px;
+            }
+            .robot-name-tag {
+                top: 90px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .robot-btn {
+                padding: 6px 10px;
+                font-size: 0.65em;
+                border-radius: 14px;
+                gap: 3px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .robot-control-panel {
+                bottom: 10px;
+                padding: 6px 10px;
+                gap: 4px;
+                max-width: 98vw;
+            }
+            .robot-btn {
+                padding: 4px 8px;
+                font-size: 0.6em;
+                border-radius: 12px;
+            }
+            .robot-name-tag {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="three-page" data-model-id="robot">
+    <div class="container">
+        <div class="game-area" id="model-area">
+            <div class="three-model-selector" id="model-selector"></div>
+            <div class="three-container-wrap">
+                <div id="three-container"></div>
+            </div>
+            <div class="robot-control-panel" id="robot-controls">
+                <button class="robot-btn green" data-action="walk" title="播放/暂停动画">▶ 播放</button>
+                <button class="robot-btn orange" data-action="speedUp" title="加速">⏩ 加速</button>
+                <button class="robot-btn cyan" data-action="slowDown" title="减速">⏪ 减速</button>
+                <button class="robot-btn pink" data-action="reverse" title="倒放">🔃 倒放</button>
+                <button class="robot-btn yellow" data-action="pose1" title="T-Pose">✖ T-Pose</button>
+                <button class="robot-btn purple" data-action="pose2" title="大鹏展翅">🦅 展翅</button>
+                <button class="robot-btn red" data-action="reset" title="重置">⏹ 重置</button>
+            </div>
+            <div class="three-info">
+                🖱 拖拽旋转视角 | 滚轮缩放 | 滑动屏幕 360° 观看
+            </div>
+        </div>
+    </div>
+
+    <!-- WebGPU 导入映射 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three/libs/three.webgpu.min.js",
+                "three/webgpu": "../assets/js/three/libs/three.webgpu.min.js",
+                "three/tsl": "../assets/js/three/libs/three.tsl.min.js",
+                "three/addons/": "../assets/js/three/libs/"
+            }
+        }
+    </script>
+
+    <!-- 公共模块 -->
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/three/models.js"></script>
+
+    <!-- 模块脚本 -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { screenUV, color, vec2, vec4, reflector, positionWorld } from 'three/tsl';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+        // 注入依赖到全局
+        window.__ROBOT_DEPS__ = { THREE, FBXLoader };
+        window.__TSL__ = { screenUV, color, vec2, vec4, reflector, positionWorld };
+        window.THREE = THREE;
+
+        // 动态加载 robot.js
+        var script = document.createElement('script');
+        script.src = '../assets/js/three/robot.js';
+        script.onload = function () {
+            initRobot('three-container', {
+                model: '../assets/models/fbx/mixamo.fbx'
+            }, {
+                fov: 35,
+                camPosY: 1.2,
+                camPosZ: 2.5,
+                scale: 0.01
+            });
+        };
+        document.head.appendChild(script);
+
+        // 集成公共导航和模型选择器
+        window.addEventListener('load', function () {
+            if (typeof initCommonLayout === 'function') {
+                initCommonLayout('three', 'models');
+            }
+            if (typeof initModelSelector === 'function') {
+                initModelSelector();
+            }
+        });
+    </script>
+</body>
+</html>

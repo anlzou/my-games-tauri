@@ -1,0 +1,239 @@
+/* ========== 推箱子 ========== */
+.sokoban-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+.sokoban-main {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    width: 100%;
+}
+.sokoban-grid-wrapper {
+    overflow: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+}
+.sokoban-grid {
+    display: grid;
+    gap: 1px;
+    background: #333;
+    padding: 4px;
+    border-radius: 8px;
+    width: fit-content;
+}
+.sokoban-cell {
+    width: clamp(28px, 7vw, 40px);
+    height: clamp(28px, 7vw, 40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.9em, 3.2vw, 1.3em);
+    border-radius: 3px;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+}
+.sokoban-cell.wall {
+    background: #444;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 4px #222;
+}
+.sokoban-cell.floor { background: #2a2a4a; }
+.sokoban-cell.target {
+    background: #2a2a4a;
+    color: #ffd700;
+    font-size: 0.75em;
+}
+.sokoban-cell.box {
+    background: #8B4513;
+    border-radius: 4px;
+    border: 2px solid #A0522D;
+    color: #fff;
+    font-size: 0.85em;
+}
+.sokoban-cell.box-on-target {
+    background: #28a745;
+    border-radius: 4px;
+    border: 2px solid #34ce57;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+.sokoban-cell.player {
+    background: #2a2a4a;
+    color: #3498db;
+    font-size: 1.3em;
+}
+.sokoban-cell.player-on-target {
+    background: #2a2a4a;
+    color: #3498db;
+    font-size: 1.3em;
+    box-shadow: inset 0 0 0 2px rgba(255, 215, 0, 0.5);
+}
+
+/* PC端隐藏方向键 */
+.dpad {
+    display: none;
+}
+.dpad-btn {
+    width: 52px;
+    height: 52px;
+    background: rgba(52, 152, 219, 0.15);
+    border: 2px solid rgba(52, 152, 219, 0.4);
+    color: #3498db;
+    border-radius: 12px;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dpad-btn:active {
+    background: #3498db;
+    color: #1a1a2e;
+    transform: scale(0.92);
+}
+.dpad-btn.empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+    pointer-events: none;
+}
+
+.sokoban-drawer {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 220px;
+    z-index: 10;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+.sokoban-drawer .drawer-section {
+    background: rgba(26, 26, 46, 0.95);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    transform: translateX(calc(100% + 15px));
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+    opacity: 0;
+    pointer-events: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.sokoban-drawer .drawer-section.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+.sokoban-drawer .drawer-section h3 {
+    color: #00d4ff;
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    padding-bottom: 6px;
+}
+.sokoban-drawer-controls {
+    display: none;
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 12px;
+    z-index: 15;
+}
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+.level-btn {
+    padding: 8px 4px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    transition: all 0.2s;
+    text-align: center;
+}
+.level-btn:hover { background: rgba(0, 212, 255, 0.25); }
+.level-btn.active {
+    background: #00d4ff;
+    color: #1a1a2e;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+.level-btn.completed { border-color: #28a745; color: #28a745; }
+.level-btn.completed.active { background: #28a745; color: #fff; }
+
+@media (max-width: 768px) {
+    .sokoban-grid-wrapper { justify-content: center; }
+    .sokoban-drawer { display: flex; }
+    .sokoban-drawer-controls { display: flex; }
+    .sokoban-main {
+        position: relative;
+        gap: 0;
+        justify-content: center;
+    }
+    /* 移动端显示方向键，修复按钮样式 */
+    .dpad {
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        grid-template-rows: repeat(2, 52px);
+        gap: 4px;
+        justify-content: center;
+        margin: 8px auto 0;
+    }
+    .dpad-btn {
+        width: 52px;
+        height: 52px;
+        background: rgba(52, 152, 219, 0.2);
+        border: 2px solid rgba(52, 152, 219, 0.5);
+        color: #3498db;
+        border-radius: 12px;
+        font-size: 1.4em;
+        cursor: pointer;
+        transition: all 0.15s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+@media (max-width: 400px) {
+    .sokoban-cell {
+        width: clamp(24px, 6.5vw, 36px);
+        height: clamp(24px, 6.5vw, 36px);
+        font-size: clamp(0.8em, 3vw, 1.1em);
+    }
+    .dpad {
+        grid-template-columns: repeat(3, 46px);
+        grid-template-rows: repeat(2, 46px);
+    }
+    .dpad-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 1.2em;
+    }
+}

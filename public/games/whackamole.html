@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>打地鼠 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/whackamole.css">
+</head>
+<body>
+    <div class="container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- 打地鼠游戏区域 -->
+        <div id="whackamole" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setWhackDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setWhackDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setWhackDiff('hard')">困难</button>
+                <button class="diff-btn" onclick="setWhackDiff('insane')">疯狂</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startWhackamole()">开始</button>
+                <button class="ctrl-btn pause-btn" id="whack-pause-btn" onclick="pauseWhackamole()" style="display:none;">暂停</button>
+                <button class="ctrl-btn reset-btn" onclick="resetWhackamole()">重置</button>
+            </div>
+            <div class="info-panel">
+                <div>🏆 得分: <span id="whack-score">0</span></div>
+                <div>⏱️ 时间: <span id="whack-time">30</span>s</div>
+                <div>🔨 命中: <span id="whack-hit">0</span></div>
+                <div>💨 漏击: <span id="whack-miss">0</span></div>
+            </div>
+            <div class="whack-wrapper">
+                <div class="whack-grid" id="whack-grid">
+                    <!-- 9 个洞由 JS 动态生成 -->
+                </div>
+                <div class="controls-hint">点击冒出的地鼠打它！别打到炸弹 💥</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/whackamole.js"></script>
+</body>
+</html>

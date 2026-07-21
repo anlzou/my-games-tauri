@@ -1,0 +1,60 @@
+/* ========== 2048 ========== */
+.game2048-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.game2048-grid {
+    display: grid;
+    gap: 8px;
+    background: #3a3a3a;
+    padding: 8px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    touch-action: none;
+    position: relative;
+}
+.game2048-cell {
+    background: #4a4a4a;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    position: absolute;
+    width: calc(25% - 10px);
+    height: calc(25% - 10px);
+    transition: transform 0.3s ease-in-out;
+}
+.game2048-cell[data-val="2"] { background: #eee4da; color: #776e65; }
+.game2048-cell[data-val="4"] { background: #ede0c8; color: #776e65; }
+.game2048-cell[data-val="8"] { background: #f2b179; color: #f9f6f2; }
+.game2048-cell[data-val="16"] { background: #f59563; color: #f9f6f2; }
+.game2048-cell[data-val="32"] { background: #f67c5f; color: #f9f6f2; }
+.game2048-cell[data-val="64"] { background: #f65e3b; color: #f9f6f2; }
+.game2048-cell[data-val="128"] { background: #edcf72; color: #f9f6f2; }
+.game2048-cell[data-val="256"] { background: #edcc61; color: #f9f6f2; }
+.game2048-cell[data-val="512"] { background: #edc850; color: #f9f6f2; }
+.game2048-cell[data-val="1024"] { background: #edc53f; color: #f9f6f2; }
+.game2048-cell[data-val="2048"] { background: #edc22e; color: #f9f6f2; }
+.game2048-cell.new { animation: pop 0.3s ease-in-out; }
+.game2048-cell.merged { animation: pop 0.3s ease-in-out; }
+@keyframes pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .game2048-grid { gap: 6px; padding: 6px; }
+    .game2048-cell { font-size: 1.5em; width: calc(25% - 8px); height: calc(25% - 8px); }
+}
+@media (max-width: 400px) {
+    .game2048-grid { gap: 4px; padding: 4px; }
+    .game2048-cell { font-size: 1.2em; width: calc(25% - 6px); height: calc(25% - 6px); }
+}

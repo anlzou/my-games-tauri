@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2048 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/game2048.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 2048游戏区域 -->
+        <div id="game2048" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="set2048Diff('easy')">简单 3×3</button>
+                <button class="diff-btn" onclick="set2048Diff('medium')">中等 4×4</button>
+                <button class="diff-btn" onclick="set2048Diff('hard')">困难 5×5</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="newGame2048()">新游戏</button>
+            </div>
+            <div class="info-panel">
+                <div>🏆 得分: <span id="game2048-score">0</span></div>
+                <div>📊 最高: <span id="game2048-high">0</span></div>
+            </div>
+            <div class="game2048-wrapper">
+                <div class="game2048-grid" id="game2048-grid"></div>
+                <div class="controls-hint">滑动屏幕或使用方向键移动方块</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/game2048.js"></script>
+</body>
+</html>

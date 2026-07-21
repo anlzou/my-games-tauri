@@ -1,0 +1,44 @@
+/* ========== 打砖块 ========== */
+.breakout-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.breakout-canvas {
+    display: block;
+    border: 3px solid #00d4ff;
+    border-radius: 10px;
+    background: #0a0a1a;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+}
+.breakout-controls {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 320px;
+    margin-top: 4px;
+}
+.breakout-btn {
+    padding: 18px 10px;
+    background: rgba(0, 212, 255, 0.15);
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    color: #00d4ff;
+    border-radius: 12px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+.breakout-btn:active { background: #00d4ff; color: #0a0a1a; transform: scale(0.95); }
+
+@media (max-width: 768px) {
+    .breakout-controls { display: grid; }
+}

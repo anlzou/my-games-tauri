@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>贪吃蛇 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/snake.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 贪吃蛇游戏区域 -->
+        <div id="snake" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setSnakeDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setSnakeDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setSnakeDiff('hard')">困难</button>
+                <button class="diff-btn" onclick="setSnakeDiff('insane')">疯狂</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startSnake()">开始</button>
+                <button class="ctrl-btn pause-btn" id="snake-pause-btn" onclick="pauseSnake()">暂停</button>
+                <button class="ctrl-btn reset-btn" onclick="resetSnake()">重置</button>
+            </div>
+            <div class="info-panel">
+                <div>🍎 得分: <span id="snake-score">0</span></div>
+                <div>🏆 最高: <span id="snake-high">0</span></div>
+                <div>📊 长度: <span id="snake-len">1</span></div>
+            </div>
+            <div class="snake-wrapper">
+                <canvas id="snake-canvas" class="snake-canvas" width="400" height="400"></canvas>
+                <div class="controls-hint">方向键 ↑↓←→ 或 WASD 控制 | 空格暂停</div>
+                <div class="dpad" id="snake-dpad">
+                    <div class="dpad-btn empty"></div>
+                    <button class="dpad-btn" ontouchstart="handleDpad(event,'up')">▲</button>
+                    <div class="dpad-btn empty"></div>
+                    <button class="dpad-btn" ontouchstart="handleDpad(event,'left')">◀</button>
+                    <button class="dpad-btn" ontouchstart="handleDpad(event,'down')">▼</button>
+                    <button class="dpad-btn" ontouchstart="handleDpad(event,'right')">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/snake.js"></script>
+</body>
+</html>

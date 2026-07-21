@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>俄罗斯方块 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/tetris.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 俄罗斯方块游戏区域 -->
+        <div id="tetris" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setTetrisDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setTetrisDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setTetrisDiff('hard')">困难</button>
+                <button class="diff-btn" onclick="setTetrisDiff('insane')">疯狂</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startTetris()">开始</button>
+                <button class="ctrl-btn pause-btn" id="tetris-pause-btn" onclick="pauseTetris()">暂停</button>
+                <button class="ctrl-btn reset-btn" onclick="resetTetris()">重置</button>
+            </div>
+            <div class="tetris-wrapper">
+                <div class="tetris-main">
+                    <canvas id="tetris-canvas" class="tetris-canvas" width="300" height="600"></canvas>
+                    <div class="tetris-side" id="tetris-side">
+                        <div class="next-piece">
+                            <h3>下一个</h3>
+                            <canvas id="next-canvas-desktop" class="next-canvas" width="120" height="120"></canvas>
+                        </div>
+                        <div class="tetris-info">
+                            <p>🏆 得分: <span id="tetris-score-desktop">0</span></p>
+                            <p>📊 行数: <span id="tetris-lines-desktop">0</span></p>
+                            <p>🎯 等级: <span id="tetris-level-desktop">1</span></p>
+                        </div>
+                    </div>
+                    <div class="tetris-drawer" id="tetris-drawer">
+                        <div class="drawer-section next-piece" id="drawer-next">
+                            <canvas id="next-canvas" class="next-canvas" width="120" height="120"></canvas>
+                        </div>
+                        <div class="drawer-section tetris-info" id="drawer-info">
+                            <p>🏆 得分: <span id="tetris-score">0</span></p>
+                            <p>📊 行数: <span id="tetris-lines">0</span></p>
+                            <p>🎯 等级: <span id="tetris-level">1</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-controls">
+                    <button class="drawer-btn" id="toggle-next-btn" onclick="toggleTetrisDrawer('next')">👁️</button>
+                    <button class="drawer-btn" id="toggle-info-btn" onclick="toggleTetrisDrawer('info')">🏆</button>
+                </div>
+                <div class="controls-hint">←→ 移动 | ↑ 旋转 | ↓ 加速 | 空格直接落底</div>
+                <div class="tetris-controls" id="tetris-controls">
+                    <button class="tetris-btn" ontouchstart="handleTetrisBtn(event,'left')">◀ 左移</button>
+                    <button class="tetris-btn" ontouchstart="handleTetrisBtn(event,'rotate')">↻ 旋转</button>
+                    <button class="tetris-btn" ontouchstart="handleTetrisBtn(event,'right')">右移 ▶</button>
+                    <button class="tetris-btn full-width" ontouchstart="handleTetrisBtn(event,'down')">▼ 加速</button>
+                    <button class="tetris-btn full-width" ontouchstart="handleTetrisBtn(event,'drop')">⬇ 直接落底</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/tetris.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>推箱子 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/sokoban.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 推箱子游戏区域 -->
+        <div id="sokoban" class="game-area">
+            <div class="difficulty-selector" style="visibility: hidden; margin-bottom: 12px;">
+                <button class="diff-btn">占位</button>
+            </div>
+            <div class="control-panel" style="max-width: 280px; margin-left: auto; margin-right: auto;">
+                <button class="ctrl-btn start-btn" onclick="newSokobanGame()">新游戏</button>
+                <button class="ctrl-btn hint-btn" onclick="undoSokoban()">↩ 撤销</button>
+                <button class="ctrl-btn reset-btn" onclick="resetSokoban()">重置</button>
+            </div>
+            <div class="info-panel">
+                <div>📊 关卡: <span id="sokoban-level">1</span>/15</div>
+                <div>👣 步数: <span id="sokoban-moves">0</span></div>
+                <div>🎯 完成: <span id="sokoban-targets">0/0</span></div>
+            </div>
+            <div class="sokoban-wrapper">
+                <div class="sokoban-main">
+                    <div class="sokoban-grid-wrapper">
+                        <div class="sokoban-grid" id="sokoban-grid"></div>
+                    </div>
+                    <div class="sokoban-drawer" id="sokoban-drawer">
+                        <div class="drawer-section sokoban-levels" id="drawer-levels">
+                            <h3>🗂️ 选择关卡</h3>
+                            <div class="level-grid" id="level-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sokoban-drawer-controls">
+                    <button class="drawer-btn" id="toggle-levels-btn" onclick="toggleSokobanDrawer()">📋</button>
+                </div>
+                <div class="controls-hint">方向键或 WASD 移动 | Ctrl+Z 撤销</div>
+                <div class="dpad" id="sokoban-dpad">
+                    <div class="dpad-btn empty"></div>
+                    <button class="dpad-btn" ontouchstart="handleSokobanDpad(event,'up')">▲</button>
+                    <div class="dpad-btn empty"></div>
+                    <button class="dpad-btn" ontouchstart="handleSokobanDpad(event,'left')">◀</button>
+                    <button class="dpad-btn" ontouchstart="handleSokobanDpad(event,'down')">▼</button>
+                    <button class="dpad-btn" ontouchstart="handleSokobanDpad(event,'right')">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/sokoban.js"></script>
+</body>
+</html>

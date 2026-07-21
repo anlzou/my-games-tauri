@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>华容道 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/klotski.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 华容道游戏区域 -->
+        <div id="klotski" class="game-area">
+            <!-- 主题选择 -->
+            <div class="theme-selector">
+                <button class="theme-btn active" data-theme="classic" onclick="setKlotskiTheme('classic')">🏯 经典</button>
+                <button class="theme-btn" data-theme="plants" onclick="setKlotskiTheme('plants')">🌿 植物</button>
+                <button class="theme-btn" data-theme="animals" onclick="setKlotskiTheme('animals')">🐾 动物</button>
+                <button class="theme-btn" data-theme="fruits" onclick="setKlotskiTheme('fruits')">🍎 水果</button>
+                <button class="theme-btn" data-theme="numbers" onclick="setKlotskiTheme('numbers')">🔢 数字</button>
+            </div>
+
+            <!-- 操作面板 -->
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startKlotskiGame()">打乱</button>
+                <button class="ctrl-btn reset-btn" onclick="resetKlotski()">重置</button>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="klotski-stats info-panel">
+                <div>👣 步数: <span id="klotski-moves">0</span></div>
+                <div>⏱ 用时: <span id="klotski-time">00:00</span></div>
+            </div>
+
+            <!-- 棋盘 -->
+            <div class="klotski-container">
+                <div id="klotski-board" class="klotski-board theme-classic"></div>
+                <div class="controls-hint">点击棋子移动 · 滑动方向移动 · 按 R 重置</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/klotski.js"></script>
+    <script>initKlotski();</script>
+</body>
+</html>

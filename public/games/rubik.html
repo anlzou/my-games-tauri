@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3D魔方 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/rubik.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 魔方游戏区域 -->
+        <div id="rubik" class="game-area">
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="rubikScramble()">打乱</button>
+                <button class="ctrl-btn reset-btn" onclick="rubikReset()">重置</button>
+            </div>
+            <div class="info-panel" id="rubik-info">
+                ⏱️ <span id="rubik-timer">00:00</span>
+                &nbsp;|&nbsp; 步数: <span id="rubik-moves">0</span>
+                &nbsp;|&nbsp; 阶数: <span id="rubik-order-display">3</span>×<span id="rubik-order-display2">3</span>
+            </div>
+            <div class="rubik-wrapper">
+                <div class="rubik-canvas-container" id="rubik-container"></div>
+                <div class="rubik-face-hint">
+                    🖱 点击面块 + 拖拽旋转该层 | 拖拽空白处旋转视角
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 悬浮设置按钮 -->
+    <button class="rubik-fab" id="rubik-fab" onclick="rubikOpenSettings()">⚙️</button>
+
+    <!-- 设置弹窗 -->
+    <div class="rubik-modal-overlay" id="rubik-settings-overlay" onclick="rubikCloseSettings(event)">
+        <div class="rubik-modal" id="rubik-settings-modal">
+            <div class="rubik-modal-header">
+                <h3>⚙️ 魔方设置</h3>
+                <button class="rubik-modal-close" onclick="rubikCloseSettings()">✕</button>
+            </div>
+            <div class="rubik-modal-body">
+                <div class="rubik-setting-row">
+                    <label>魔方阶数</label>
+                    <div class="rubik-order-selector">
+                        <button class="rubik-order-btn active" data-order="2" onclick="rubikSelectOrder(2)">2×2</button>
+                        <button class="rubik-order-btn" data-order="3" onclick="rubikSelectOrder(3)">3×3</button>
+                        <button class="rubik-order-btn" data-order="4" onclick="rubikSelectOrder(4)">4×4</button>
+                        <button class="rubik-order-btn" data-order="5" onclick="rubikSelectOrder(5)">5×5</button>
+                    </div>
+                </div>
+                <div class="rubik-setting-row">
+                    <label>动画速度</label>
+                    <div class="rubik-speed-selector">
+                        <button class="rubik-speed-btn" data-speed="0.5" onclick="rubikSelectSpeed(0.5)">慢速</button>
+                        <button class="rubik-speed-btn active" data-speed="1" onclick="rubikSelectSpeed(1)">正常</button>
+                        <button class="rubik-speed-btn" data-speed="2" onclick="rubikSelectSpeed(2)">快速</button>
+                    </div>
+                </div>
+            </div>
+            <div class="rubik-modal-footer">
+                <button class="rubik-modal-btn rubik-modal-btn-primary" onclick="rubikApplySettings()">应用</button>
+                <button class="rubik-modal-btn" onclick="rubikCloseSettings()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/rubik.js"></script>
+</body>
+</html>
+

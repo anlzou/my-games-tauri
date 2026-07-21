@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>飞翔的小鸟 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/flappybird.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 飞翔的小鸟 游戏区域 -->
+        <div id="flappybird" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setFlappyDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setFlappyDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setFlappyDiff('hard')">困难</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startFlappyBird()">开始</button>
+                <button class="ctrl-btn pause-btn" id="flappy-pause-btn" onclick="pauseFlappyBird()" style="display:none;">暂停</button>
+                <button class="ctrl-btn reset-btn" onclick="resetFlappyBird()">重置</button>
+            </div>
+            <div class="flappy-wrapper">
+                <div class="flappy-canvas-wrapper">
+                    <canvas id="flappy-canvas" width="400" height="600"></canvas>
+                    <div class="flappy-score-overlay" id="flappy-score-overlay">点击开始</div>
+                </div>
+                <div class="flappy-best-score">🏆 最高分: <span id="flappy-best">0</span></div>
+                <div class="info-panel">
+                    <div>🐦 当前: <span id="flappy-score">0</span></div>
+                    <div>🎯 通过: <span id="flappy-pipes">0</span></div>
+                </div>
+                <div class="controls-hint">点击/触摸屏幕 / 按空格键让小鸟向上飞</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/flappybird.js"></script>
+</body>
+</html>
+

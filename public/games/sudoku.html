@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>数独 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/sudoku.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 数独游戏区域 -->
+        <div id="sudoku" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setSudokuDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setSudokuDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setSudokuDiff('hard')">困难</button>
+                <button class="diff-btn" onclick="setSudokuDiff('expert')">专家</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="newSudoku()">新游戏</button>
+                <button class="ctrl-btn reset-btn" onclick="clearSudoku()">清空</button>
+                <button class="ctrl-btn hint-btn" onclick="checkSudoku()">检查</button>
+            </div>
+            <div class="info-panel" id="sudoku-info">⏱️ <span id="sudoku-timer">00:00</span></div>
+            <div class="sudoku-wrapper">
+                <div class="sudoku-grid" id="sudoku-grid"></div>
+                <div class="sudoku-numpad">
+                    <button class="num-btn" onclick="inputNumber(1)">1</button>
+                    <button class="num-btn" onclick="inputNumber(2)">2</button>
+                    <button class="num-btn" onclick="inputNumber(3)">3</button>
+                    <button class="num-btn" onclick="inputNumber(4)">4</button>
+                    <button class="num-btn" onclick="inputNumber(5)">5</button>
+                    <button class="num-btn" onclick="inputNumber(6)">6</button>
+                    <button class="num-btn" onclick="inputNumber(7)">7</button>
+                    <button class="num-btn" onclick="inputNumber(8)">8</button>
+                    <button class="num-btn" onclick="inputNumber(9)">9</button>
+                    <button class="num-btn clear" onclick="inputNumber(0)">✕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/sudoku.js"></script>
+</body>
+</html>

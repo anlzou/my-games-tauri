@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>程序化地形 - 3D模型</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/three/three.css">
+    <style>
+        body { background: #000; }
+        .container { padding: 0; }
+        .game-selector { display: none !important; }
+        .sidebar { z-index: 200; }
+        .sidebar-overlay { z-index: 190; }
+        .three-page .top-bar { z-index: 150; }
+    </style>
+</head>
+<body class="three-page" data-model-id="terrain">
+    <div class="container">
+        <div class="game-area" id="model-area">
+            <div class="three-model-selector" id="model-selector"></div>
+            <div class="three-container-wrap">
+                <div id="three-container"></div>
+            </div>
+            <div class="three-info">
+                🖱 拖拽旋转视角 | 滚轮缩放 | 滑动屏幕 360° 观看
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three/libs/three.module.min.js",
+                "three/addons/": "../assets/js/three/libs/"
+            }
+        }
+    </script>
+
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/three/models.js"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        window.THREE = THREE;
+
+        function initTerrain() {
+            const container = document.getElementById('three-container');
+            if (!container) return;
+
+            // --- 场景 ---
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a1a);
+            scene.fog = new THREE.Fog(0x0a0a1a, 15, 30);
+
+            // --- 相机 ---
+            const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(6, 5, 8);
+            camera.lookAt(0, 0, 0);
+
+            // --- 渲染器 ---
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // --- 光照 ---
+            const ambient = new THREE.AmbientLight(0x223366, 0.6);
+            scene.add(ambient);
+
+            const sunLight = new THREE.DirectionalLight(0xffeedd, 1.5);
+            sunLight.position.set(8, 12, 5);
+            scene.add(sunLight);
+
+            const fillLight = new THREE.DirectionalLight(0x4488ff, 0.4);
+            fillLight.position.set(-5, 3, -5);
+            scene.add(fillLight);
+
+            // --- 控制器 ---
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 0, 0);
+            controls.maxPolarAngle = Math.PI / 2.3;
+
+            // ============ 使用 SimplexNoise 生成地形 ============
+            const noise = new SimplexNoise();
+
+            const size = 40;
+            const segments = 80;
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+            const indices = [];
+            const normals = [];
+
+            const frequency = 0.08;
+            const amplitude = 2.0;
+
+            // 颜色配置
+            const colorLow = new THREE.Color(0x1a5276);   // 深海蓝
+            const colorMid = new THREE.Color(0x2d7d46);   // 草地绿
+            const colorHigh = new THREE.Color(0x8B4513);  // 棕色
+            const colorPeak = new THREE.Color(0xffffff);  // 雪白
+
+            for (let iz = 0; iz <= segments; iz++) {
+                for (let ix = 0; ix <= segments; ix++) {
+                    const x = (ix / segments - 0.5) * size;
+                    const z = (iz / segments - 0.5) * size;
+
+                    // 多层 SimplexNoise 叠加（分形噪声）
+                    let y = 0;
+                    let freq = frequency;
+                    let amp = amplitude;
+                    let maxVal = 0;
+
+                    // 4 层八度叠加
+                    for (let octave = 0; octave < 4; octave++) {
+                        const n = noise.noise3D(x * freq, z * freq, 0.5) * amp;
+                        y += n;
+                        maxVal += amp;
+                        freq *= 2;
+                        amp *= 0.5;
+                    }
+
+                    // 归一化到 [0, 1] 范围再映射到地形高度
+                    y = (y / maxVal) * amplitude;
+
+                    // 边缘渐低，形成自然边界
+                    const edgeDist = Math.max(Math.abs(x / (size / 2)), Math.abs(z / (size / 2)));
+                    const edgeFade = Math.max(0, 1 - Math.pow(edgeDist, 3));
+                    y *= edgeFade;
+
+                    vertices.push(x, y, z);
+
+                    // 根据高度着色
+                    const normalizedY = (y + amplitude) / (2 * amplitude); // 映射到 [0, 1]
+                    let color;
+                    if (normalizedY < 0.25) {
+                        color = colorLow.clone().lerp(colorMid, normalizedY / 0.25);
+                    } else if (normalizedY < 0.55) {
+                        color = colorMid.clone().lerp(colorHigh, (normalizedY - 0.25) / 0.3);
+                    } else if (normalizedY < 0.8) {
+                        color = colorHigh.clone().lerp(colorPeak, (normalizedY - 0.55) / 0.25);
+                    } else {
+                        color = colorPeak;
+                    }
+                    colors.push(color.r, color.g, color.b);
+                }
+            }
+
+            // 构建索引（三角形条带）
+            for (let iz = 0; iz < segments; iz++) {
+                for (let ix = 0; ix < segments; ix++) {
+                    const a = iz * (segments + 1) + ix;
+                    const b = iz * (segments + 1) + ix + 1;
+                    const c = (iz + 1) * (segments + 1) + ix;
+                    const d = (iz + 1) * (segments + 1) + ix + 1;
+                    indices.push(a, b, c);
+                    indices.push(b, d, c);
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setIndex(indices);
+            geometry.computeVertexNormals();
+
+            // 地形材质
+            const material = new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                roughness: 0.8,
+                metalness: 0.1,
+                flatShading: false,
+                side: THREE.DoubleSide,
+            });
+
+            const terrain = new THREE.Mesh(geometry, material);
+            terrain.receiveShadow = true;
+            terrain.castShadow = true;
+            scene.add(terrain);
+
+            // --- 底部平面（水面效果） ---
+            const waterGeo = new THREE.PlaneGeometry(size, size);
+            const waterMat = new THREE.MeshBasicMaterial({
+                color: 0x0a2a4a,
+                transparent: true,
+                opacity: 0.5,
+                side: THREE.DoubleSide,
+            });
+            const water = new THREE.Mesh(waterGeo, waterMat);
+            water.rotation.x = -Math.PI / 2;
+            water.position.y = -amplitude * 0.5;
+            scene.add(water);
+
+            // --- 自适应 ---
+            function onResize() {
+                const w = container.clientWidth;
+                const h = container.clientHeight || 500;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            }
+            window.addEventListener('resize', onResize);
+
+            // --- 动画 ---
+            let animId;
+            let time = 0;
+            function animate() {
+                animId = requestAnimationFrame(animate);
+                time += 0.005;
+                terrain.rotation.y += 0.001;
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // --- 清理 ---
+            window.__terrainViewerDispose = function () {
+                cancelAnimationFrame(animId);
+                window.removeEventListener('resize', onResize);
+                renderer.dispose();
+                if (container.contains(renderer.domElement)) {
+                    container.removeChild(renderer.domElement);
+                }
+            };
+        }
+
+        window.addEventListener('load', function () {
+            if (typeof initCommonLayout === 'function') initCommonLayout('three', 'models');
+            if (typeof initModelSelector === 'function') initModelSelector();
+            initTerrain();
+        });
+    </script>
+</body>
+</html>

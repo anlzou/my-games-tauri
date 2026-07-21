@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>见缝插针 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/pinball.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 见缝插针游戏区域 -->
+        <div id="pinball" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setPinballDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setPinballDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setPinballDiff('hard')">困难</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startPinball()">开始</button>
+                <button class="ctrl-btn reset-btn" onclick="resetPinball()">重置</button>
+            </div>
+            <div class="info-panel">
+                <div>🎯 关卡: <span id="pinball-level">1</span></div>
+                <div>🎯 剩余: <span id="pinball-left">0</span></div>
+            </div>
+            <div class="pinball-wrapper">
+                <canvas id="pinball-canvas" class="pinball-canvas" width="320" height="320"></canvas>
+                <div class="controls-hint">点击屏幕或按空格键插针</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/pinball.js"></script>
+</body>
+</html>

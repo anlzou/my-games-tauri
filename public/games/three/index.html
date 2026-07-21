@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3D模型展示 - 3D画廊</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <style>
+        html, body { height: 100%; overflow: hidden; }
+        .container { height: 100%; padding: 0; max-width: none; }
+        .hall-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+        .hall-header {
+            flex-shrink: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0 0;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            z-index: 10;
+        }
+        .hall-title {
+            font-size: 2.2em;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+            background: linear-gradient(90deg, #00d4ff, #c77dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .hall-subtitle {
+            color: #aaa;
+            font-size: 1em;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .models-grid {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 800px;
+            padding: 0 12px 20px;
+            min-height: 0;
+        }
+        .model-card {
+            background: rgba(199, 125, 255, 0.08);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .model-card:hover {
+            background: rgba(199, 125, 255, 0.2);
+            border-color: #c77dff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(199, 125, 255, 0.2);
+        }
+        .model-card .icon {
+            font-size: 2.5em;
+        }
+        .model-card .name {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #c77dff;
+        }
+        .model-card .desc {
+            font-size: 0.75em;
+            color: #888;
+        }
+        .model-card .badge {
+            font-size: 0.7em;
+            padding: 2px 8px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            color: #00d4ff;
+        }
+        .footer-info {
+            flex-shrink: 0;
+            padding: 12px 0 20px;
+            color: #666;
+            font-size: 0.85em;
+            text-align: center;
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .hall-title { font-size: 1.6em; }
+            .hall-header { padding-top: 12px; }
+            .models-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .model-card { padding: 16px 8px; }
+            .model-card .icon { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hall-wrapper">
+            <div class="hall-header">
+                <h1 class="hall-title">🎨 3D 模型展示</h1>
+                <p class="hall-subtitle">探索精彩的 3D 模型，拖拽旋转查看细节</p>
+            </div>
+            <div class="models-grid">
+                <a href="./cube.html" class="model-card">
+                    <span class="icon">📦</span>
+                    <span class="name">旋转立方体</span>
+                    <span class="desc">经典彩色立方体</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./sphere.html" class="model-card">
+                    <span class="icon">🔮</span>
+                    <span class="name">发光球体</span>
+                    <span class="desc">带粒子光效的球体</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./torus.html" class="model-card">
+                    <span class="icon">🔄</span>
+                    <span class="name">扭结环</span>
+                    <span class="desc">复杂扭结曲面</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./earth.html" class="model-card">
+                    <span class="icon">🌍</span>
+                    <span class="name">旋转地球</span>
+                    <span class="desc">Canvas生成纹理</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./skinning.html" class="model-card">
+                    <span class="icon">🏃</span>
+                    <span class="name">骨骼动画</span>
+                    <span class="desc">蒙皮骨骼动画模型</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./gltf_avif.html" class="model-card">
+                    <span class="icon">🏠</span>
+                    <span class="name">GLTF AVIF</span>
+                    <span class="desc">GLTF模型与AVIF纹理</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./retargeting_readyplayer.html" class="model-card">
+                    <span class="icon">🔄</span>
+                    <span class="name">动画重定向</span>
+                    <span class="desc">Mixamo动画重定向到ReadyPlayer.me</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./convex_hull.html" class="model-card">
+                    <span class="icon">💎</span>
+                    <span class="name">凸包几何</span>
+                    <span class="desc">随机点云凸包计算</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./terrain.html" class="model-card">
+                    <span class="icon">🏔️</span>
+                    <span class="name">程序化地形</span>
+                    <span class="desc">Simplex噪声生成地形</span>
+                    <span class="badge">Three.js</span>
+                </a>
+                <a href="./robot.html" class="model-card">
+                    <span class="icon">🤖</span>
+                    <span class="name">机器人模型</span>
+                    <span class="desc">机器人模型展示</span>
+                    <span class="badge">Three.js</span>
+                    
+                </a>
+            </div>
+            </div>
+            <p class="footer-info">
+                <a href="../index.html" style="color:#00d4ff;text-decoration:none;margin-right:16px;">🏠 返回主大厅</a>
+                支持桌面端和移动端 | 🖱 拖拽旋转 | 滚轮缩放
+            </p>
+        </div>
+    </div>
+    <script src="../assets/js/common.js"></script>
+</body>
+</html>

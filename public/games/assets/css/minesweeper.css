@@ -1,0 +1,226 @@
+/* ========== 扫雷 ========== */
+
+/* 修复布局：确保侧边栏和游戏区域都能完整显示 */
+#minesweeper.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+}
+/* 扫雷页面覆盖通用布局的滚动容器，让内部网格独立滚动 */
+.game-scroll-container:has(#minesweeper) {
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+}
+
+/* 控制按钮区 - 不滚动，固定在顶部 */
+.mine-controls {
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 棋盘包装区 - 占据剩余空间，超出时独立滚动（双向） */
+.minesweeper-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    width: 100%;
+    padding-top: 8px;
+    text-align: center;
+}
+.mine-grid-wrapper {
+    display: inline-block;
+    text-align: left;
+}
+.minesweeper-grid {
+    display: grid;
+    gap: 2px;
+    background: #333;
+    padding: 4px;
+    border-radius: 8px;
+    width: fit-content;
+}
+.mine-cell {
+    width: clamp(28px, 8vw, 40px);
+    height: clamp(28px, 8vw, 40px);
+    background: #4a4a6a;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: clamp(0.8em, 3vw, 1.1em);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.mine-cell:active:not(.revealed):not(.flagged) { transform: scale(0.92); background: #5a5a8a; }
+.mine-cell.revealed { background: #2a2a4a; cursor: default; }
+.mine-cell.flagged { background: #ff6b6b; color: white; }
+.mine-cell.mine { background: #dc3545; color: white; }
+.mine-cell.num-1 { color: #3498db; }
+.mine-cell.num-2 { color: #2ecc71; }
+.mine-cell.num-3 { color: #e74c3c; }
+.mine-cell.num-4 { color: #9b59b6; }
+.mine-cell.num-5 { color: #e67e22; }
+.mine-cell.num-6 { color: #1abc9c; }
+.mine-cell.num-7 { color: #34495e; }
+.mine-cell.num-8 { color: #7f8c8d; }
+
+.mine-info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 0.9em;
+    flex-wrap: wrap;
+}
+.mine-info span { color: #ff6b6b; }
+
+.flag-mode-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.9em;
+}
+.flag-toggle {
+    width: 48px;
+    height: 26px;
+    background: #444;
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex-shrink: 0;
+}
+.flag-toggle.active { background: #ff6b6b; }
+.flag-toggle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: left 0.3s;
+}
+.flag-toggle.active::after { left: 25px; }
+
+/* ========== 自定义按钮样式 ========== */
+.custom-btn {
+    background: #6c5ce7 !important;
+}
+.custom-btn:hover {
+    background: #7c6cf7 !important;
+}
+
+/* ========== 自定义设置弹窗 ========== */
+#custom-modal .modal-content {
+    max-width: 380px;
+    width: 90%;
+    background: #2a2a4a;
+    border: 2px solid #6c5ce7;
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+}
+
+#custom-modal .modal-content h2 {
+    color: #fff;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+}
+
+.custom-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.custom-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.custom-row label {
+    color: #ccc;
+    font-size: 0.95em;
+    min-width: 70px;
+    text-align: right;
+}
+
+.custom-row input {
+    width: 90px;
+    padding: 8px 12px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    background: #1e1e3a;
+    color: #fff;
+    font-size: 1em;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.custom-row input:focus {
+    border-color: #6c5ce7;
+}
+
+/* 去掉number输入框的上下箭头 */
+.custom-row input[type="number"]::-webkit-inner-spin-button,
+.custom-row input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.custom-row input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.custom-hint {
+    color: #888;
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.custom-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.custom-apply-btn {
+    background: #6c5ce7 !important;
+    flex: 1;
+}
+.custom-apply-btn:hover {
+    background: #7c6cf7 !important;
+}
+
+.custom-cancel-btn {
+    background: #e67e22 !important;
+    flex: 1;
+}
+.custom-cancel-btn:hover {
+    background: #d35400 !important;
+}
+
+.custom-random-btn {
+    background: #2ecc71 !important;
+    flex: 1;
+}
+.custom-random-btn:hover {
+    background: #27ae60 !important;
+}
+

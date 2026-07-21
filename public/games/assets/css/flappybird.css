@@ -1,0 +1,67 @@
+/* ========== 飞翔的小鸟 ========== */
+.flappy-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.flappy-canvas-wrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 120, 255, 0.3);
+    border: 2px solid rgba(0, 180, 255, 0.3);
+    max-width: 480px;
+    width: 100%;
+}
+
+#flappy-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #70c5ce;
+    cursor: pointer;
+}
+
+.flappy-score-overlay {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.flappy-best-score {
+    text-align: center;
+    font-size: 0.9em;
+    color: #ffd700;
+    margin-top: 4px;
+}
+
+.flappy-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.flappy-controls-row .ctrl-btn {
+    padding: 8px 18px;
+}
+
+@media (max-width: 768px) {
+    .flappy-score-overlay {
+        font-size: 1.8em;
+        top: 8px;
+    }
+    .flappy-canvas-wrapper {
+        max-width: 100%;
+    }
+}

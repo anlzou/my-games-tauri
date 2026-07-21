@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>打砖块 - 经典游戏合集</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/breakout.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 打砖块游戏区域 -->
+        <div id="breakout" class="game-area">
+            <div class="difficulty-selector">
+                <button class="diff-btn active" onclick="setBreakoutDiff('easy')">简单</button>
+                <button class="diff-btn" onclick="setBreakoutDiff('medium')">中等</button>
+                <button class="diff-btn" onclick="setBreakoutDiff('hard')">困难</button>
+                <button class="diff-btn" onclick="setBreakoutDiff('insane')">疯狂</button>
+            </div>
+            <div class="control-panel">
+                <button class="ctrl-btn start-btn" onclick="startBreakout()">开始</button>
+                <button class="ctrl-btn pause-btn" id="breakout-pause-btn" onclick="pauseBreakout()">暂停</button>
+                <button class="ctrl-btn reset-btn" onclick="resetBreakout()">重置</button>
+            </div>
+            <div class="info-panel">
+                <div>🏆 得分: <span id="breakout-score">0</span></div>
+                <div>❤️ 生命: <span id="breakout-lives">3</span></div>
+            </div>
+            <div class="breakout-wrapper">
+                <canvas id="breakout-canvas" class="breakout-canvas" width="480" height="320"></canvas>
+                <div class="controls-hint">←→ 方向键或 A/D 移动挡板 | 空格暂停</div>
+                <div class="breakout-controls" id="breakout-controls">
+                    <button class="breakout-btn" id="breakout-btn-left">◀ 左移</button>
+                    <button class="breakout-btn" id="breakout-btn-right">右移 ▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/common.js"></script>
+    <script>initCommonLayout();</script>
+    <script src="assets/js/breakout.js"></script>
+</body>
+</html>
+
