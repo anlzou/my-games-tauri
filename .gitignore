@@ -34,5 +34,16 @@ dist-ssr
 # Tauri / Rust
 src-tauri/target/
 
+# Android APK 构建产物
+*.apk
+*.apk.idsig
+src-tauri/gen/android/build/
+src-tauri/gen/android/app/build/
+src-tauri/gen/android/.gradle/
+src-tauri/gen/android/local.properties
+
+# Android studio
+src-tauri/gen/android/**/local.properties
+
 # Vite cache
 .vite

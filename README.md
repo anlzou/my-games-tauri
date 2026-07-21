@@ -127,3 +127,255 @@ pnpm run tauri:dev
 - **包管理**：[pnpm](https://pnpm.io/)
 - **3D 引擎**：[Three.js](https://threejs.org/)
 - **后端语言**：[Rust](https://www.rust-lang.org/)
+
+---
+
+## 📱 Android 打包（通用说明）
+
+Tauri v2 原生支持将应用编译为 Android APK/AAB。Rust 代码交叉编译为 `arm64-v8a`（或其他架构）的 `.so` 动态库，前端静态文件嵌入 APK 中。
+
+### 前置条件（Android 通用）
+
+| 工具 | 说明 |
+|------|------|
+| **JDK 17 或 21** | Gradle 构建需要，[JDK 21 下载](https://adoptium.net/) |
+| **Android SDK** | 包含 cmdline-tools、platform-tools、build-tools |
+| **Android NDK** | 用于 Rust 交叉编译到 Android |
+| **Rust Android 目标** | `rustup target add aarch64-linux-android` 等 |
+| **cargo-ndk** | Rust 交叉编译工具：`cargo install cargo-ndk` |
+
+### 初始化 Android 项目（一次性的）
+
+```bash
+pnpm tauri android init
+```
+
+这会生成 `src-tauri/gen/android/` 目录，包含完整的 Android Studio Gradle 项目。
+
+### 编译 Android APK
+
+```bash
+pnpm tauri android build --target aarch64
+```
+
+> `--target aarch64` 仅编译 ARM64 架构，加快构建速度。如需要完整多架构 APK，去掉此参数。
+
+### 产物路径
+
+| 格式 | 路径 |
+|------|------|
+| APK (未签名) | `src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk` |
+| AAB (未签名) | `src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab` |
+
+### 签名 APK
+
+```bash
+# 1. 生成密钥（仅首次）
+keytool -genkey -v -keystore ~/my-release-key.keystore \
+  -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+# 2. zipalign 对齐 + apksigner 签名
+zipalign -v -p 4 app-universal-release-unsigned.apk app-release-aligned.apk
+apksigner sign --ks ~/my-release-key.keystore \
+  --ks-key-alias my-key-alias \
+  --out app-release-signed.apk \
+  app-release-aligned.apk
+
+# 3. 验证签名
+apksigner verify --verbose app-release-signed.apk
+```
+
+### 安装到设备
+
+```bash
+# 连接 Android 设备（开启 USB 调试）
+adb install app-release-signed.apk
+```
+
+---
+
+## 🐧 Linux 环境 Android 打包
+
+### 1. 安装依赖
+
+```bash
+# Rust Android 编译目标
+rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+# cargo-ndk（Rust → Android 交叉编译工具）
+cargo install cargo-ndk
+```
+
+### 2. 安装 Android SDK + NDK
+
+```bash
+# 下载 Android 命令行工具
+mkdir -p ~/Android/Sdk && cd ~/Android/Sdk
+wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+unzip commandlinetools-linux-11076708_latest.zip
+mkdir -p cmdline-tools/latest && mv tools/* cmdline-tools/latest/
+
+# 设置环境变量（写入 ~/.bashrc）
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.3.11579264
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+# 安装 SDK 组件
+sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+
+# 安装 NDK 26.3
+sdkmanager "ndk;26.3.11579264"
+```
+
+> 国内用户可尝试镜像源：`https://mirrors.bfsu.edu.cn/android/repository/`，但 NDK 等大文件需从 Google 下载。也可直接用 `wget` 下载 NDK：
+> ```bash
+> wget https://dl.google.com/android/repository/android-ndk-r26d-linux.zip
+> unzip android-ndk-r26d-linux.zip -d ~/Android/Sdk/ndk/26.3.11579264/
+> ```
+
+### 3. 检查 JDK 版本
+
+Gradle 8.14 需要 **JDK 17~21**，不兼容 JDK 26+。可通过 sdkman 管理多版本 JDK：
+
+```bash
+# 使用 sdkman 安装 JDK 21
+sdk install java 21.0.7-amzn
+
+# 临时切换 JDK 版本
+export JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.7-amzn
+```
+
+### 4. 编译
+
+```bash
+cd my-games-tauri
+
+export JAVA_HOME=/path/to/jdk-21
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.3.11579264
+
+pnpm tauri android build --target aarch64
+```
+
+### 5. 签名（Linux）
+
+```bash
+export ANDROID_HOME=$HOME/Android/Sdk
+
+UNSIGNED="src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk"
+
+# zipalign 对齐
+$ANDROID_HOME/build-tools/34.0.0/zipalign -v -p 4 "$UNSIGNED" app-release-aligned.apk
+
+# apksigner 签名
+$ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+  --ks ~/my-release-key.keystore \
+  --ks-key-alias my-key-alias \
+  --ks-pass pass:123456 \
+  --out app-release-signed.apk \
+  app-release-aligned.apk
+
+# 验证
+$ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app-release-signed.apk
+```
+
+---
+
+## 🪟 Windows 环境 Android 打包
+
+### 1. 安装依赖
+
+```powershell
+# Rust Android 编译目标
+rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+# cargo-ndk
+cargo install cargo-ndk
+```
+
+### 2. 安装 Android Studio（推荐）
+
+从 [developer.android.com/studio](https://developer.android.com/studio) 下载并安装 **Android Studio**，安装时勾选：
+
+- ✅ Android SDK
+- ✅ Android SDK Platform
+- ✅ Android Virtual Device（可选，用于模拟器）
+- ✅ Performance (Intel HAXM)（可选）
+- ✅ Android NDK
+
+### 3. 配置环境变量
+
+```powershell
+# 系统环境变量（管理员 PowerShell）
+[System.Environment]::SetEnvironmentVariable('ANDROID_HOME', "$env:LOCALAPPDATA\Android\Sdk", 'User')
+[System.Environment]::SetEnvironmentVariable('ANDROID_NDK_HOME', "$env:LOCALAPPDATA\Android\Sdk\ndk\26.3.11579264", 'User')
+
+# 将以下路径添加到 PATH
+# %ANDROID_HOME%\cmdline-tools\latest\bin
+# %ANDROID_HOME%\platform-tools
+# %ANDROID_HOME%\build-tools\34.0.0
+```
+
+> Android Studio 默认 SDK 路径为 `%LOCALAPPDATA%\Android\Sdk`。
+
+### 4. 安装 JDK
+
+```powershell
+# 通过 sdkman 或直接下载 Adoptium JDK 21
+# https://adoptium.net/temurin/releases/?version=21
+
+# 设置 JAVA_HOME 环境变量
+[System.Environment]::SetEnvironmentVariable('JAVA_HOME', 'C:\Program Files\Eclipse Adoptium\jdk-21.0.7-hotspot', 'User')
+```
+
+### 5. 初始化并编译
+
+```powershell
+cd my-games-tauri
+
+# 初始化 Android 项目（首次）
+pnpm tauri android init
+
+# 编译 APK
+pnpm tauri android build --target aarch64
+```
+
+### 6. 签名（Windows）
+
+```powershell
+# 生成密钥（首次）
+keytool -genkey -v -keystore "%USERPROFILE%\my-release-key.keystore" ^
+  -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+# zipalign + apksigner
+set ANDROID_HOME=%LOCALAPPDATA%\Android\Sdk
+
+"%ANDROID_HOME%\build-tools\34.0.0\zipalign" -v -p 4 ^
+  "src-tauri\gen\android\app\build\outputs\apk\universal\release\app-universal-release-unsigned.apk" ^
+  app-release-aligned.apk
+
+"%ANDROID_HOME%\build-tools\34.0.0\apksigner" sign ^
+  --ks "%USERPROFILE%\my-release-key.keystore" ^
+  --ks-key-alias my-key-alias ^
+  --out app-release-signed.apk ^
+  app-release-aligned.apk
+
+# 验证
+"%ANDROID_HOME%\build-tools\34.0.0\apksigner" verify --verbose app-release-signed.apk
+```
+
+---
+
+### 常见问题
+
+**Q: Gradle 报 `Unsupported class file major version`？**  
+A: JDK 版本过高。Gradle 8.14 需要 JDK 17~21，请使用 JDK 21 而不是 JDK 26+。
+
+**Q: `cargo ndk` 编译失败？**  
+A: 确保已设置 `ANDROID_HOME` 和 `ANDROID_NDK_HOME` 环境变量，且 NDK 版本与 Rust 目标兼容。
+
+**Q: APK 安装到手机后闪退？**  
+A: 确认 Android 设备 API 版本 ≥ 26（Android 8.0）。可在 `tauri.conf.json` 中配置最低 SDK 版本。
+
+**Q: 国内下载太慢？**  
+A: 可使用国内镜像源加速 SDK 下载，但 NDK（~670MB）仍需从 Google 下载，可用 `wget` 断点续传。**Windows 用户建议直接安装 Android Studio**，它内置了 SDK Manager 和 NDK 管理功能。
