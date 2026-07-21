@@ -11,7 +11,7 @@
 ## 📁 项目结构
 
 ```
-demo01/
+my-games-tauri/
 ├── src/                    # Vue 3 前端
 │   ├── App.vue             # 游戏大厅（分类菜单 + iframe 播放器）
 │   ├── main.ts             # Vue 入口
@@ -42,6 +42,26 @@ demo01/
 | **pnpm** | 任意 | `npm install -g pnpm` |
 | **Rust** | 最新稳定版 | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh` |
 
+### Windows 系统依赖
+
+1. **安装 Microsoft Visual Studio Build Tools**（C++ 编译环境）
+   - 下载 [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+   - 安装时勾选 **"使用 C++ 的桌面开发"**（Desktop development with C++）
+   - 确保包含 **Windows 10/11 SDK**
+
+2. **安装 WebView2**（Windows 10 以下系统需要）
+   - Windows 10 (1803+) / Windows 11 已内置 WebView2
+   - 旧系统请从 [Microsoft WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) 下载安装
+
+3. **安装 Rust 工具链**（以管理员身份运行 PowerShell）
+   ```powershell
+   # 下载并安装 Rust
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+   # 确保安装 Visual Studio 后，添加 MSVC 工具链
+   rustup default stable-msvc
+   ```
+
 ### Linux 系统依赖
 
 ```bash
@@ -63,6 +83,8 @@ sudo apt install -y \
 
 ## 🚀 运行
 
+### 所有平台通用
+
 ```bash
 # 1. 安装前端依赖
 pnpm install
@@ -71,6 +93,13 @@ pnpm install
 pnpm run tauri:dev
 ```
 
+### Windows 下注意事项
+
+- **终端选择**：建议使用 **PowerShell** 或 **Windows Terminal**，确保以普通用户（非管理员）身份运行
+- **首次编译较慢**：Rust 需要下载并编译所有依赖，首次运行可能需要 5-15 分钟
+- **杀毒软件**：若编译缓慢，可暂时将项目目录添加至杀毒软件排除列表
+- **中文路径**：确保项目路径**不包含中文字符**，否则可能导致 Rust 编译报错
+
 ### 可用命令
 
 | 命令 | 说明 |
@@ -78,10 +107,9 @@ pnpm run tauri:dev
 | `pnpm run tauri:dev` | ✅ **开发运行（推荐）** — 启动 Vite 热重载 + Tauri 桌面窗口 |
 | `pnpm run dev` | 仅启动 Vite 前端开发服务器（浏览器预览） |
 | `pnpm run build` | 构建前端代码 |
-| `pnpm tauri build` | ✅ 构建桌面应用安装包（.deb / .AppImage / .dmg） |
+| `pnpm tauri build` | ✅ 构建桌面应用安装包（Windows: `.msi` / `.exe`；Linux: `.deb` / `.AppImage`；macOS: `.dmg`） |
 
-> **注意**：若 VS Code 以 Snap 包方式安装，从 VS Code 内置终端运行 `pnpm tauri dev` 会因 Snap 环境与系统 glibc 冲突而报错。已添加 `tauri:dev` 脚本自动修复此问题。
-> 如果在普通终端（非 VS Code 终端）中运行，直接使用 `pnpm tauri dev` 即可。
+> **Linux 注意**：若 VS Code 以 Snap 包方式安装，从 VS Code 内置终端运行 `pnpm tauri dev` 会因 Snap 环境与系统 glibc 冲突而报错。已添加 `tauri:dev` 脚本自动修复此问题。如果在普通终端（非 VS Code 终端）中运行，直接使用 `pnpm tauri dev` 即可。
 
 ## 🎮 使用说明
 
